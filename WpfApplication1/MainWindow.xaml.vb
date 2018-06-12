@@ -189,7 +189,6 @@ Class MainWindow
         StoreIP.setMyPort(myFilePort)
         ' Call ReceiveTCP(myFilePort)
         cmdFileSend.IsEnabled = True
-        MsgBox("Connected")
     End Sub
 
 
