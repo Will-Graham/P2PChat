@@ -189,6 +189,7 @@ Class MainWindow
         StoreIP.setMyPort(myFilePort)
         ' Call ReceiveTCP(myFilePort)
         cmdFileSend.IsEnabled = True
+        MsgBox("Connected")
     End Sub
 
 
@@ -396,6 +397,7 @@ Public Class TCPChat
 
         With clientSocket
             Try
+
                 If isIp Then    ' ip address
                     .Connect(IPAddress.Parse(remoteAddress), remotePort)
                 Else            ' DNS name
