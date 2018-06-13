@@ -47,12 +47,16 @@ Class MainWindow
         thdListener.Start()
     End Sub
     Private Sub TextLoader()
-        Dim sr As New StreamReader(My.Application.Info.DirectoryPath & "\textsave.txt")
-        txtNotes.Text = sr.ReadLine()
-        While Not sr.EndOfStream
-            txtNotes.Text = txtNotes.Text & vbCrLf & sr.ReadLine()
-        End While
-        sr.Close()
+        Try
+            Dim sr As New StreamReader(My.Application.Info.DirectoryPath & "\textsave.txt")
+            txtNotes.Text = sr.ReadLine()
+            While Not sr.EndOfStream
+                txtNotes.Text = txtNotes.Text & vbCrLf & sr.ReadLine()
+            End While
+            sr.Close()
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
     End Sub
     'Private Sub MainWindow_Close(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Me.Closed
     '    Dim sw As New StreamWriter(My.Application.Info.DirectoryPath & "\textsave.txt")
