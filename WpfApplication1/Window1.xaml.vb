@@ -9,8 +9,7 @@ Imports System.IO
 Imports System.Net
 Imports System.Net.Sockets
 Imports Microsoft.Win32
-
-
+Imports System.Threading
 
 Public Class Window1
     ' Class FileSender
@@ -21,63 +20,28 @@ Public Class Window1
     Private Const BufferSize As Integer = 1024
     Dim remIP As String = StoreIP.getRemIP
     Dim remport As Integer = StoreIP.getRemPort
-    'Public Sub New()
-    '    InitializeComponent()
-    'End Sub
-
-    'Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs)
-    '    progressBar1.Visible = True
-    '    progressBar1.Minimum = 1
-    '    progressBar1.Value = 1
-    '    progressBar1.[Step] = 1
-    'End Sub
-
+    Private WithEvents sendfilename As New FileNameSender
+    Dim filename As String
+    Dim filelength As Long
 
     Private Sub onload() Handles Me.Loaded
         Console.WriteLine(remIP)
     End Sub
 
-    'Public Sub SendTCP(ByVal M As String, ByVal IPA As String, ByVal PortN As Int32)
-    '    Dim SendingBuffer As Byte() = Nothing
-    '    Dim client As TcpClient = Nothing
-    '    '  lblStatus.Text = ""
-    '    Dim netstream As NetworkStream = Nothing
-    '    Try
-    '        client = New TcpClient(IPA, PortN)
-    '        '          lblStatus.Text = "Connected to the Server..." & vbLf
-    '        netstream = client.GetStream()
-    '        Dim Fs As FileStream = New FileStream(M, FileMode.Open, FileAccess.Read)
-    '        Dim NoOfPackets As Integer = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Fs.Length) / Convert.ToDouble(BufferSize)))
-    '        '     progressBar1.Maximum = NoOfPackets
-    '        Dim CurrentPacketLength As Integer, TotalLength As Integer = CInt(Fs.Length), counter As Integer = 0
-    '        For i As Integer = 0 To NoOfPackets - 1
-    '            If TotalLength > BufferSize Then
-    '                CurrentPacketLength = BufferSize
-    '                TotalLength = TotalLength - CurrentPacketLength
-    '            Else
-    '                CurrentPacketLength = TotalLength
-    '            End If
 
-    '            SendingBuffer = New Byte(CurrentPacketLength - 1) {}
-    '            Fs.Read(SendingBuffer, 0, CurrentPacketLength)
-    '            netstream.Write(SendingBuffer, 0, CInt(SendingBuffer.Length))
-    '            '  If progressBar1.Value >= progressBar1.Maximum Then progressBar1.Value = progressBar1.Minimum
-    '            '  progressBar1.PerformStep()
-    '        Next
-
-    '        ' lblStatus.Text = lblStatus.Text & "Sent " & Fs.Length.ToString() & " bytes to the server"
-    '        Fs.Close()
-    '    Catch ex As Exception
-    '        Console.WriteLine(ex.Message)
-    '    Finally
-    '        '  netstream.Close()
-    '        'client.Close()
-    '    End Try
-    'End Sub
-    ''End Class
     Dim bytearray As Array
+    'Dim filenamesent As Boolean = False
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
         If SendingFilePath <> Nothing Then
+            '    While Not filenamesent
+            '        sendfilename.SendData(filename, remIP, CInt(remport))
+            '        filenamesent = True
+            '    End While
+            'While filenamesent
+            sendfilename.SendData(filelength, remIP, CInt(remport))
+            MsgBox(filelength)
+            '    filenamesent = False
+            'End While
             Dim filebuffer As Byte()
             Dim fileStream As Stream
 
@@ -109,6 +73,87 @@ Public Class Window1
         Dlg.InitialDirectory = "C:\"
         If Dlg.ShowDialog() = True Then
             SendingFilePath = Dlg.FileName
+            filename = Path.GetFileNameWithoutExtension(SendingFilePath)
+            filelength = FileLen(SendingFilePath)
+            tbkFileName.Text = "File Selected: " + SendingFilePath
         End If
+
     End Sub
+End Class
+Public Class FileNameSender
+    ''' <summary>
+    ''' Event data send back to calling form
+    ''' </summary>
+    Public Event Datareceived(ByVal txt As String)
+    ''' <summary>
+    ''' connection status back to form True: ok
+    ''' </summary>
+    Public Event connection(ByVal cStatus As Boolean)
+    ''' <summary>
+    ''' data send successfull (True)
+    ''' </summary>
+    Public Event sendOK(ByVal sStatus As Boolean)
+    ''' <summary>
+    ''' data receive successfull (True)
+    ''' </summary>
+    Public Event recOK(ByVal sReceive As Boolean)
+
+    Private serverRuns As Boolean
+    Private server As TcpListener
+    Private sc As SynchronizationContext
+    Private isConnected, receiveStatus, sendStatus As Boolean
+    Private iRemote, pLocal As EndPoint
+
+    ''' <summary>
+    ''' reads endpoints
+    ''' </summary>
+    Public ReadOnly Property Remote() As EndPoint
+        Get
+            Return iRemote
+        End Get
+    End Property
+    ''' <summary>
+    ''' reads local point
+    ''' </summary>
+    Public ReadOnly Property Local() As EndPoint
+        Get
+            Return pLocal
+        End Get
+    End Property
+    ''' <summary>
+    ''' TCP send data
+    ''' </summary>
+    Public Function SendData(ByVal txt As String, ByVal remoteAddress As String, ByVal remotePort As Integer)
+
+        Dim clientSocket = New TcpClient
+        Dim iP As IPAddress = IPAddress.Any
+        Dim isIp As Boolean = IPAddress.TryParse(remoteAddress, iP)
+
+        With clientSocket
+            Try
+
+                If isIp Then    ' ip address
+                    .Connect(IPAddress.Parse(remoteAddress), remotePort)
+                Else            ' DNS name
+                    .Connect(remoteAddress, remotePort)
+                End If
+
+                Dim data() As Byte = Encoding.ASCII.GetBytes(txt)
+                .NoDelay = True
+                .GetStream().Write(data, 0, data.Length)
+                .GetStream().Close()
+
+                .Close()
+                sendStatus = True
+
+            Catch ex As Exception
+                MsgBox("sendData: " & ex.Message, MsgBoxStyle.Exclamation)
+                sendStatus = False
+            Finally
+                RaiseEvent sendOK(sendStatus)
+            End Try
+            Return sendStatus
+        End With
+    End Function
+
 End Class

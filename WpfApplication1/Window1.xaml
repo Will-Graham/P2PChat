@@ -10,8 +10,9 @@
             <ColumnDefinition Width="20*"/>
             <ColumnDefinition Width="53*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="cmdTest" Content="Send File" Grid.Column="1" HorizontalAlignment="Left" Margin="88,95,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <Button x:Name="Select_File" Content="Select File" Grid.Column="1" HorizontalAlignment="Left" Height="53" Margin="39,128,0,0" VerticalAlignment="Top" Width="103" Click="Button_Click_1"/>
+        <Button x:Name="cmdTest" Content="Send File" Grid.Column="1" HorizontalAlignment="Left" Margin="10,157,0,0" VerticalAlignment="Top" Width="99" Click="Button_Click" RenderTransformOrigin="0.956,4.32" Height="39"/>
+        <Button x:Name="Select_File" Content="Select File" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="10,127,0,0" VerticalAlignment="Top" Width="99" Click="Button_Click_1"/>
+        <TextBlock x:Name="tbkFileName" HorizontalAlignment="Left" TextWrapping="Wrap" Text="File Selected: Nothing" VerticalAlignment="Top" Margin="10,21,0,0" Grid.ColumnSpan="2" Height="101" Width="272" TextAlignment="Center"/>
 
     </Grid>
 </Window>

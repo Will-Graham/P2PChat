@@ -22,7 +22,7 @@
         <Button x:Name="CmdSend" Content="Send" HorizontalAlignment="Left" VerticalAlignment="Top" Width="66" Margin="160,432,0,0" Height="104" Grid.Column="2" Grid.Row="2" IsEnabled="False"/>
         <TextBox x:Name="txtIP" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0.0.0.0" VerticalAlignment="Top" Width="140" Margin="86,9,0,0" Grid.Row="2"/>
         <TextBlock x:Name="lblIP" TextWrapping="Wrap" Margin="15,15,203,500" Grid.Row="2"><Run Language="en-au" Text="IP Address:"/><LineBreak/><Run Language="en-au"/></TextBlock>
-        <Button x:Name="cmdIPCONN" Content="Connect" HorizontalAlignment="Left" Width="73" Margin="10,0,0,558" Grid.Column="1" Grid.RowSpan="3"/>
+        <Button x:Name="cmdIPCONN" Content="Connect" HorizontalAlignment="Left" Width="73" Margin="10,0,0,558" Grid.Column="1" Grid.RowSpan="3" Height="37" VerticalAlignment="Bottom"/>
         <TextBox x:Name="txtNotes" HorizontalAlignment="Left" Height="477" TextWrapping="Wrap" VerticalAlignment="Top" Width="279" Margin="10,58,0,0" FontSize="13.333" FontStyle="Italic" Grid.Row="2" Grid.ColumnSpan="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
         <TextBlock x:Name="lblNotes" TextWrapping="Wrap" Margin="11,38,154,475" FontSize="13.333" Grid.Row="2" Grid.ColumnSpan="2"><Run Language="en-au" Text="Keep addresses and notes here:"/><LineBreak/><Run Language="en-au"/></TextBlock>
         <Button x:Name="cmdClear" Content="Clear" Margin="138,3,25,553" Grid.Column="2" Grid.RowSpan="3"/>
