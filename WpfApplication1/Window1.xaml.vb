@@ -10,6 +10,7 @@ Imports System.Net
 Imports System.Net.Sockets
 Imports Microsoft.Win32
 Imports System.Threading
+Imports System.Environment
 
 Public Class Window1
     ' Class FileSender
@@ -24,24 +25,38 @@ Public Class Window1
     Dim filename As String
     Dim filelength As Long
 
-    Private Sub onload() Handles Me.Loaded
-        Console.WriteLine(remIP)
-    End Sub
+    ' For Debugging Purposes
+    'Private Sub onload() Handles Me.Loaded
+    '    Console.WriteLine(remIP)
+    'End Sub
 
 
     Dim bytearray As Array
-    'Dim filenamesent As Boolean = False
+    Dim filenamesent As Boolean = False
+    Dim filesizesent As Boolean = False
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
         If SendingFilePath <> Nothing Then
-            '    While Not filenamesent
-            '        sendfilename.SendData(filename, remIP, CInt(remport))
-            '        filenamesent = True
-            '    End While
-            'While filenamesent
-            sendfilename.SendData(filelength, remIP, CInt(remport))
-            MsgBox(filelength)
-            '    filenamesent = False
-            'End While
+            If filenamesent = False Then
+                sendfilename.SendData(filename, remIP, CInt(remport))
+                MsgBox("a " + filename)
+                filenamesent = True
+                Call sendfilelen()
+                filenamesent = True
+            End If
+        End If
+    End Sub
+    Private Sub sendfilelen()
+        If filesizesent = False Then
+            sendfilename.SendData(filelength, remIP, CInt(remport + 500))
+            MsgBox("b " + Str(filelength))
+            filesizesent = True
+            Call filesender()
+        End If
+
+    End Sub
+    Private Sub filesender()
+        If SendingFilePath <> Nothing Then
+
             Dim filebuffer As Byte()
             Dim fileStream As Stream
 
@@ -58,22 +73,23 @@ Public Class Window1
                 networkStream.Write(filebuffer, 0, fileStream.Length)
                 networkStream.Close()
             Catch ex As Exception
-                MsgBox("Error: " & ex.Message)
+                MsgBox("Error: " & ex.Message & vbCrLf & "File Did not send successfully!", vbExclamation)
+                Exit Sub
             End Try
-
+            MsgBox("File Successfully Sent!")
+            SendingFilePath = Nothing
+            tbkFileName.Text = "File Selected: None"
         End If
     End Sub
-
-
     Private Sub Button_Click_1(sender As Object, e As RoutedEventArgs)
         Dim Dlg As OpenFileDialog = New OpenFileDialog()
         Dlg.Filter = "All Files (*.*)|*.*"
         Dlg.CheckFileExists = True
         Dlg.Title = "Choose a File"
-        Dlg.InitialDirectory = "C:\"
+        Dlg.InitialDirectory = "C:\Users\" + UserName + "\Desktop"
         If Dlg.ShowDialog() = True Then
             SendingFilePath = Dlg.FileName
-            filename = Path.GetFileNameWithoutExtension(SendingFilePath)
+            filename = Path.GetFileName(SendingFilePath)
             filelength = FileLen(SendingFilePath)
             tbkFileName.Text = "File Selected: " + SendingFilePath
         End If
