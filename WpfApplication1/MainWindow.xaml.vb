@@ -297,10 +297,12 @@ Class MainWindow
                     ' Only one process can access the
                     ' same file at any given time
                     Dim fileStream As Stream = File.OpenWrite(receivingFilePath)
-                    While (True)
-                        thisRead = networkStream.Read(dataByte, 0, filesize)
+                    While FileLen(receivingFilePath) < filesize
+                        While (True)
+                        thisRead = networkStream.Read(dataByte, 0, dataByte.Length)
                         fileStream.Write(dataByte, 0, dataByte.Length)
                         If thisRead = 0 Then Exit While
+                        End While
                     End While
                     fileStream.Close()
                 End SyncLock
