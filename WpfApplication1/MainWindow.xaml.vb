@@ -338,7 +338,7 @@ Class MainWindow
 
 
             End If
-
+            ' fix
             handlerSocket = Nothing
         End If
     End Sub
