@@ -32,32 +32,27 @@ Public Class Window1
 
 
     Dim bytearray As Array
-
+    Dim filenamesent As Boolean = False
+    Dim filesizesent As Boolean = False
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
         If SendingFilePath <> Nothing Then
-
-            sendfilename.SendData(filename, remIP, CInt(remport))
+            If filenamesent = False Then
+                sendfilename.SendData(filename, remIP, CInt(remport))
                 MsgBox("a " + filename)
-
-            Call sendfilelen()
-
-
+                filenamesent = True
+                Call sendfilelen()
+                filenamesent = True
+            End If
         End If
     End Sub
+    Private Sub sendfilelen()
+        If filesizesent = False Then
+            sendfilename.SendData(filelength, remIP, CInt(remport + 500))
+            MsgBox("b " + Str(filelength))
+            filesizesent = True
+            Call filesender()
+        End If
 
-    Private Sub sendFileLen()
-
-        sendfilename.SendData(filelength, remIP, CInt(remport + 500))
-        MsgBox("b " + Str(filelength))
-
-        Call sendfileExt()
-
-    End Sub
-    Private Sub sendfileExt()
-        sendfilename.SendData(fileExtension, remIP, CInt(remport + 1000))
-        MsgBox("c " + fileExtension)
-
-        Call filesender()
     End Sub
     Private Sub filesender()
         If SendingFilePath <> Nothing Then
@@ -86,7 +81,6 @@ Public Class Window1
             tbkFileName.Text = "File Selected: None"
         End If
     End Sub
-    Dim fileExtension As String
     Private Sub Button_Click_1(sender As Object, e As RoutedEventArgs)
         Dim Dlg As OpenFileDialog = New OpenFileDialog()
         Dlg.Filter = "All Files (*.*)|*.*"
@@ -95,14 +89,12 @@ Public Class Window1
         Dlg.InitialDirectory = "C:\Users\" + UserName + "\Desktop"
         If Dlg.ShowDialog() = True Then
             SendingFilePath = Dlg.FileName
-            filename = Path.GetFileNameWithoutExtension(SendingFilePath)
+            filename = Path.GetFileName(SendingFilePath)
             filelength = FileLen(SendingFilePath)
-            fileExtension = Path.GetExtension(SendingFilePath)
             tbkFileName.Text = "File Selected: " + SendingFilePath
         End If
 
     End Sub
-
 End Class
 Public Class FileNameSender
     ''' <summary>
