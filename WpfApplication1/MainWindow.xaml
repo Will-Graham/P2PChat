@@ -6,9 +6,9 @@
     Title="P2Pchat" Height="619.667" Width="700">
     <Grid Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}" Margin="0,0,-6,-4">
         <Grid.RowDefinitions>
-            <RowDefinition Height="24*"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="547*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="0*"/>
+            <RowDefinition Height="114*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="283*"/>
@@ -22,14 +22,15 @@
         <Button x:Name="CmdSend" Content="Send" HorizontalAlignment="Left" VerticalAlignment="Top" Width="66" Margin="160,432,0,0" Height="104" Grid.Column="2" Grid.Row="2" IsEnabled="False"/>
         <TextBox x:Name="txtIP" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0.0.0.0" VerticalAlignment="Top" Width="140" Margin="86,9,0,0" Grid.Row="2"/>
         <TextBlock x:Name="lblIP" TextWrapping="Wrap" Margin="15,15,203,500" Grid.Row="2"><Run Language="en-au" Text="IP Address:"/><LineBreak/><Run Language="en-au"/></TextBlock>
-        <Button x:Name="cmdIPCONN" Content="Connect" HorizontalAlignment="Left" Width="73" Margin="10,0,0,558" Grid.Column="1" Grid.RowSpan="3" Height="37" VerticalAlignment="Bottom"/>
-        <TextBox x:Name="txtNotes" HorizontalAlignment="Left" Height="477" TextWrapping="Wrap" VerticalAlignment="Top" Width="279" Margin="10,58,0,0" FontSize="13.333" FontStyle="Italic" Grid.Row="2" Grid.ColumnSpan="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
-        <TextBlock x:Name="lblNotes" TextWrapping="Wrap" Margin="11,38,154,475" FontSize="13.333" Grid.Row="2" Grid.ColumnSpan="2"><Run Language="en-au" Text="Keep addresses and notes here:"/><LineBreak/><Run Language="en-au"/></TextBlock>
+        <Button x:Name="cmdIPCONN" Content="Connect" HorizontalAlignment="Left" Width="73" Margin="246,0,0,523" Height="37" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Grid.Row="2"/>
+        <TextBox x:Name="txtNotes" HorizontalAlignment="Left" Height="438" TextWrapping="Wrap" VerticalAlignment="Top" Width="279" Margin="10,97,0,0" FontSize="13.333" FontStyle="Italic" Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
+        <TextBlock x:Name="lblNotes" TextWrapping="Wrap" Margin="10,78,155,435" FontSize="13.333" Grid.Row="2" Grid.ColumnSpan="2"><Run Language="en-au" Text="Keep addresses and notes here:"/><LineBreak/><Run Language="en-au"/></TextBlock>
         <Button x:Name="cmdClear" Content="Clear" Margin="138,3,25,553" Grid.Column="2" Grid.RowSpan="3"/>
-        <Label Content="My Address:" HorizontalAlignment="Left" RenderTransformOrigin="1.684,0.5" Margin="9,7,0,554" Grid.RowSpan="3"/>
+        <Label Content="My Address:" HorizontalAlignment="Left" RenderTransformOrigin="1.684,0.5" Margin="9,7,0,554" Grid.RowSpan="3" Width="75"/>
         <TextBox x:Name="txtMyIP" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0.0.0.0" VerticalAlignment="Top" Width="140" Margin="86,9,0,0" Grid.RowSpan="3" IsEnabled="False"/>
-        <Button x:Name="cmdDisconnect" Content="Disconnect" Grid.Column="1" HorizontalAlignment="Left" Margin="10,15,0,0" Grid.Row="2" VerticalAlignment="Top" Width="73"/>
+        <Button x:Name="cmdDisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="246,39,0,0" Grid.Row="2" VerticalAlignment="Top" Width="73" Grid.ColumnSpan="2" Height="20"/>
         <Button x:Name="cmdFileSend" Content="Send&#xD;&#xA;File" Grid.Column="1" HorizontalAlignment="Left" Height="69" Margin="10,467,0,0" Grid.Row="2" VerticalAlignment="Top" Width="56" Click="Button_Click" IsEnabled="False"/>
+        <Button x:Name="cmdSelectPort" Content="Select Port" HorizontalAlignment="Left" VerticalAlignment="Top" Width="73" Margin="246,3,0,0" Grid.ColumnSpan="2" Height="21"/>
 
     </Grid>
 </Window>
