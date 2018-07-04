@@ -71,7 +71,7 @@ Public Class Window1
                 ReDim filebuffer(fileStream.Length)
                 fileStream.Read(filebuffer, 0, fileStream.Length)
                 ' Open a TCP/IP Connection and send the data
-                Dim clientSocket As New TcpClient(remIP, 8080)
+                Dim clientSocket As New TcpClient(remIP, 9000)
                 Dim networkStream As NetworkStream
                 networkStream = clientSocket.GetStream()
                 networkStream.WriteTimeout = Val(9999999)
@@ -84,6 +84,7 @@ Public Class Window1
             MsgBox("File Successfully Sent!")
             SendingFilePath = Nothing
             tbkFileName.Text = "File Selected: None"
+            Me.Close()
         End If
     End Sub
     Dim fileExtension As String

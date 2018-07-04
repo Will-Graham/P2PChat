@@ -277,7 +277,7 @@ Class MainWindow
     End Sub
     Private nSockets As ArrayList
     Public Sub listenerThread()
-        Dim tcpListener As New TcpListener(8080)
+        Dim tcpListener As New TcpListener(9000)
         Dim handlerSocket As Socket
         Dim thdstHandler As ThreadStart
         Dim thdHandler As Thread
@@ -330,6 +330,7 @@ Class MainWindow
                                 If thisRead = 0 Then Exit While
                             End While
                         End While
+                        Console.WriteLine(fileStream.Length)
                         fileStream.Close()
                     End SyncLock
                 Catch ex As Exception
