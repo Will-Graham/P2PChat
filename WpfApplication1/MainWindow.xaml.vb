@@ -21,7 +21,7 @@ Class MainWindow
     Private WithEvents FileNameRecieved As New TCPChat
     Private WithEvents fileLenReceiver As New TCPChat
     Private WithEvents fileExtReceiver As New TCPChat
-    'Private myAdapterName, myPhysicalAddress, myGateway, myDNS, strHostName As String
+    Dim datareceived As Boolean = False
     Private addr() As IPAddress
     Public remPort As Integer = 5000
     Public myPort As Integer = 5000
@@ -67,6 +67,7 @@ Class MainWindow
     '    sw.Close()
     'End Sub
 
+    ' Send Buton
     Private Sub CmdSend_Click(sender As Object, e As RoutedEventArgs) Handles CmdSend.Click
         ' Driver for debug purposes
 
@@ -85,6 +86,7 @@ Class MainWindow
         End If
 
     End Sub
+    ' Encodes to Base64
     Public Function Encryptor(strOriginal As String)
         Dim byt As Byte() = System.Text.Encoding.UTF8.GetBytes(strOriginal)
         Dim strModified As String
@@ -100,15 +102,19 @@ Class MainWindow
             Return False
         End If
     End Function
+    ' Performs actions on close
     Private Sub MainWindow_Closing() Handles MyBase.Closing
         If connected Then
             myChat.disconnect()
+            FileNameRecieved.disconnect()
+            fileLenReceiver.disconnect()
+            fileExtReceiver.disconnect()
         End If
         Dim sw As New StreamWriter(My.Application.Info.DirectoryPath & "\textsave.txt")
         sw.WriteLine(txtNotes.Text)
         sw.Close()
         Dim ExitMsg = MsgBox("Do you wish to save your messages?", MsgBoxStyle.YesNo, "Save Messages")
-        If ExitMsg = 6 Then
+        If ExitMsg = vbYes Then
             If Not Directory.Exists(My.Application.Info.DirectoryPath + "\Conversations") Then
                 Directory.CreateDirectory(My.Application.Info.DirectoryPath & "\Conversations")
             End If
@@ -119,25 +125,8 @@ Class MainWindow
         End If
         End
     End Sub
-    '-
 
-    '  input from Textbox
-    '
-    'Private Sub TxtSendKD(ByVal sender As Object, ByVal e As KeyEventArgs) Handles TxtSend.KeyDown
-    '    If e.IsDown = Key.Enter Then
-    '        With CType(sender, TextBox)
-    '            If .Text.Length > 0 Then
-    '                StatusLabel_send.Image = My.Resources.ledCornerGray
-    '                myChat.SendData(.Text, txtIP.Text, CInt(remPort))
-    '                txtOutSend(.Text)
-    '                .Text = String.Empty
-    '            End If
-    '        End With
-    '    End If
-    'End Sub
-    '
-    ' output to listbox
-    '
+    ' Decodes text and displays it in received message box
     Public Sub txtOut(ByVal txt As String) Handles myChat.Datareceived
         Dim strOriginal As String
         Dim b As Byte() = Convert.FromBase64String(txt)
@@ -145,8 +134,9 @@ Class MainWindow
         TxtDisplay.Text = TxtDisplay.Text + vbCrLf + strOriginal
     End Sub
 
-    Dim filesize As Integer
-    Dim acceptfile
+    Dim filesize As Integer ' dimensions file size
+    Dim acceptfile ' checks if user wishes to receive file
+    ' Receives file name
     Public Sub fileNameReceiver(ByVal txt As String) Handles FileNameRecieved.Datareceived
         acceptfile = MsgBox("Do you wish to recieve this file: " + txt, vbQuestion + vbYesNo, "Accept File?")
         If acceptfile = vbYes Then
@@ -154,6 +144,7 @@ Class MainWindow
             '  MsgBox("a2 " + filename) 'Debug Tools
         End If
     End Sub
+    ' receives file size
     Public Sub filesizereceiver(ByVal txt As String) Handles fileLenReceiver.Datareceived
         If acceptfile = vbYes Then
             filesize = Val(txt)
@@ -161,14 +152,16 @@ Class MainWindow
             '  MsgBox("b2 " + Str(filesize))'Debug Tools
         End If
     End Sub
-    Dim fileExt As String
+    Dim fileExt As String ' Defines file extension
+    ' Receives file extension
     Public Sub fileExtreceive(ByVal txt As String) Handles fileExtReceiver.Datareceived
         If acceptfile = vbYes Then
             fileExt = txt
             '  MsgBox(fileExt & vbCrLf & txt) ' Debug Tool
-
+            datareceived = True
         End If
     End Sub
+    ' Sends Text
     Private Function txtOutSend(ByVal txt As String)
         Dim sent As Boolean = myChat.SendData(txt, txtIP.Text, CInt(remPort))
         If sent Then
@@ -191,8 +184,7 @@ Class MainWindow
     ' receive data OK NOK
 
     '
-    ' connect
-    '
+    ' Opens listener ports and defines username
     Private Sub CMDIPCONN_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdIPCONN.Click
 
         connected = myChat.connect(txtMyIP.Text, CInt(myPort))
@@ -223,7 +215,7 @@ Class MainWindow
 
 
     '
-    ' connection status
+    ' gets connection status and changes components
     '
     Private Sub connection(ByVal status As Boolean) Handles myChat.connection
         If status Then
@@ -244,8 +236,7 @@ Class MainWindow
         End If
     End Sub
     '
-    '  disconnect socket
-    '
+    '  disconnects all listnener sockets
     Private Sub btnDisconnect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDisconnect.Click
         myChat.disconnect()
         fileLenReceiver.disconnect()
@@ -259,7 +250,7 @@ Class MainWindow
         cmdDisconnect.IsEnabled = False
     End Sub
     '
-    '  clear listbox
+    '  clears text display
     '
     Private Sub btn_clear_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdClear.Click
         TxtDisplay.Text = ""
@@ -270,13 +261,14 @@ Class MainWindow
     'End Sub
 
 
-
+    ' Creates new file sender
 
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
         Dim b As New Window1
         b.Show()
     End Sub
     Private nSockets As ArrayList
+    ' Creates file receiver
     Public Sub listenerThread()
         Dim tcpListener As New TcpListener(9000)
         Dim handlerSocket As Socket
@@ -296,9 +288,14 @@ Class MainWindow
             End If
         Loop
     End Sub
-    Dim filename As String = Nothing
+    Dim filename As String = Nothing ' dimensions file name string
+
+    ' receives file
     Public Sub handlerThread()
         If acceptfile = vbYes Then
+            While datareceived = False ' stops download before file size received
+                Thread.Sleep(500)
+            End While
             Dim receivingFilePath As String
             Dim handlerSocket As Socket = nSockets(nSockets.Count - 1)
             Dim networkStream As NetworkStream = New NetworkStream(handlerSocket)
@@ -344,11 +341,12 @@ Class MainWindow
             handlerSocket = Nothing
         End If
     End Sub
-    Public WithEvents portselector As New Window2
+    Public WithEvents portselector As New Window2 ' defines a port selecting window
+    'shows port selecting window
     Private Sub cmdSelectPort_Click(sender As Object, e As RoutedEventArgs) Handles cmdSelectPort.Click
         portselector.Show()
     End Sub
-    Shared Event fileportset()
+    ' Sets new ports
     Private Sub portsetter(ByVal setmyport As Integer, ByVal setremport As Integer) Handles portselector.PortSet
         myPort = setmyport
         myFilePort = myPort + 500
@@ -356,10 +354,10 @@ Class MainWindow
         remFilePort = remPort + 500
         StoreIP.setMyPort(myFilePort)
         StoreIP.setRemPort(remFilePort)
-        RaiseEvent fileportset()
+
     End Sub
 End Class
-
+' Handles sending and receiving string data
 Public Class TCPChat
     ''' <summary>
     ''' Event data send back to calling form

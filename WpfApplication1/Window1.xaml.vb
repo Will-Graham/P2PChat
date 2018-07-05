@@ -13,7 +13,7 @@ Imports System.Threading
 Imports System.Environment
 
 Public Class Window1
-    ' Class FileSender
+
 
 
     Public SendingFilePath As String = String.Empty
@@ -33,19 +33,19 @@ Public Class Window1
 
     Dim bytearray As Array
 
-    Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
+    Private Sub Button_Click(sender As Object, e As RoutedEventArgs) ' Sends file name and begins file sending process
         If SendingFilePath <> Nothing Then
 
             sendfilename.SendData(filename, remIP, CInt(remport))
             '    MsgBox("a " + filename) ' Debug Tool
 
-            Call sendfilelen()
+            Call sendFileLen()
 
 
         End If
     End Sub
 
-    Private Sub sendFileLen()
+    Private Sub sendFileLen() ' Sends file size
 
         sendfilename.SendData(filelength, remIP, CInt(remport + 500))
         '  MsgBox("b " + Str(filelength)) ' Debug Tool
@@ -53,12 +53,13 @@ Public Class Window1
         Call sendfileExt()
 
     End Sub
-    Private Sub sendfileExt()
+    Private Sub sendfileExt() 'Sends file extension
         sendfilename.SendData(fileExtension, remIP, CInt(remport + 1000))
         '  MsgBox("c " + fileExtension) ' Debug Tool
 
         Call filesender()
     End Sub
+    ' sends file
     Private Sub filesender()
         If SendingFilePath <> Nothing Then
 
@@ -88,6 +89,7 @@ Public Class Window1
         End If
     End Sub
     Dim fileExtension As String
+    ' selects file for sending
     Private Sub Button_Click_1(sender As Object, e As RoutedEventArgs)
         Dim Dlg As OpenFileDialog = New OpenFileDialog()
         Dlg.Filter = "All Files (*.*)|*.*"
@@ -105,6 +107,7 @@ Public Class Window1
     End Sub
 
 End Class
+' sends file data
 Public Class FileNameSender
     ''' <summary>
     ''' Event data send back to calling form

@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     ResizeMode="CanMinimize"
     Icon="a1.ico"
-    Title="P2Pchat" Height="619.667" Width="700">
+    Title="P2Pchat" Height="620" Width="700">
     <Grid Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}" Margin="0,0,-6,-4">
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"/>
