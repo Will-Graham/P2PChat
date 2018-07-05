@@ -37,7 +37,7 @@ Public Class Window1
         If SendingFilePath <> Nothing Then
 
             sendfilename.SendData(filename, remIP, CInt(remport))
-                MsgBox("a " + filename)
+            '    MsgBox("a " + filename) ' Debug Tool
 
             Call sendfilelen()
 
@@ -48,14 +48,14 @@ Public Class Window1
     Private Sub sendFileLen()
 
         sendfilename.SendData(filelength, remIP, CInt(remport + 500))
-        MsgBox("b " + Str(filelength))
+        '  MsgBox("b " + Str(filelength)) ' Debug Tool
 
         Call sendfileExt()
 
     End Sub
     Private Sub sendfileExt()
         sendfilename.SendData(fileExtension, remIP, CInt(remport + 1000))
-        MsgBox("c " + fileExtension)
+        '  MsgBox("c " + fileExtension) ' Debug Tool
 
         Call filesender()
     End Sub

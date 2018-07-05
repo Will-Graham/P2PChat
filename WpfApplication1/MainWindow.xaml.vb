@@ -165,8 +165,8 @@ Class MainWindow
     Public Sub fileExtreceive(ByVal txt As String) Handles fileExtReceiver.Datareceived
         If acceptfile = vbYes Then
             fileExt = txt
-            MsgBox(fileExt & vbCrLf & txt)
-            '  MsgBox("b2 " + Str(filesize))'Debug Tools
+            '  MsgBox(fileExt & vbCrLf & txt) ' Debug Tool
+
         End If
     End Sub
     Private Function txtOutSend(ByVal txt As String)
@@ -255,7 +255,8 @@ Class MainWindow
         cmdSelectPort.IsEnabled = True
         FileNameRecieved.disconnect()
         cmdIPCONN.IsEnabled = True
-        cmdSelectPort.IsEnabled = False
+        cmdSelectPort.IsEnabled = True
+        cmdDisconnect.IsEnabled = False
     End Sub
     '
     '  clear listbox
