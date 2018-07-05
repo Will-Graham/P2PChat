@@ -22,7 +22,6 @@ Class MainWindow
     Private WithEvents fileLenReceiver As New TCPChat
     Private WithEvents fileExtReceiver As New TCPChat
     Dim datareceived As Boolean = False
-    Private addr() As IPAddress
     Public remPort As Integer = 5000
     Public myPort As Integer = 5000
     Dim connected As Boolean = False
@@ -40,7 +39,6 @@ Class MainWindow
         'T = New Thread(Ts)
         'T.Start()
         'ReceiveTCP(myFilePort)
-
         Dim IPHost As IPHostEntry
         IPHost = Dns.GetHostByName(Dns.GetHostName())
 
@@ -48,6 +46,7 @@ Class MainWindow
         nSockets = New ArrayList()
         Dim thdListener As New Thread(New ThreadStart(AddressOf listenerThread))
         thdListener.Start()
+
     End Sub
     Private Sub TextLoader()
         Try
@@ -75,7 +74,7 @@ Class MainWindow
         ''   b.Show()
         ''   b.Encryptor(TxtSend.Text)
         If Not TxtSend.Text = "" Then
-            Dim sent = Encryptor(User + ": " + TxtSend.Text)
+            Dim sent As Boolean = Encryptor(User + ": " + TxtSend.Text)
             If sent Then
                 TxtDisplay.Text = TxtDisplay.Text + vbCrLf + "Me: " + TxtSend.Text
             Else
@@ -158,7 +157,7 @@ Class MainWindow
         If acceptfile = vbYes Then
             fileExt = txt
             '  MsgBox(fileExt & vbCrLf & txt) ' Debug Tool
-            datareceived = True
+
         End If
     End Sub
     ' Sends Text
@@ -192,6 +191,7 @@ Class MainWindow
         fileLenReceiver.connect(txtMyIP.Text, CInt(myFilePort + 500))
         fileExtReceiver.connect(txtMyIP.Text, CInt(myFilePort + 1000))
         TextLoader()
+
         timeconnect = DateAndTime.Now.ToString("dd.MM.yy HH-MM")
         '   MsgBox(timeconnect)
         If connected = True Then
@@ -293,13 +293,11 @@ Class MainWindow
     ' receives file
     Public Sub handlerThread()
         If acceptfile = vbYes Then
-            While datareceived = False ' stops download before file size received
-                Thread.Sleep(500)
-            End While
+            Thread.Sleep(50)
             Dim receivingFilePath As String
             Dim handlerSocket As Socket = nSockets(nSockets.Count - 1)
             Dim networkStream As NetworkStream = New NetworkStream(handlerSocket)
-            Dim blockSize As Int16 = 1024
+            Dim blockSize As Int16 = 1 '024
             Dim thisRead As Int16
             Dim dataByte(blockSize) As Byte
             Dim Dlg As SaveFileDialog = New SaveFileDialog()
